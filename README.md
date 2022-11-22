@@ -17,7 +17,85 @@ Project to show a simple use of the Factory Design Pattern
 - run main.py `python main.py`
 
 
+### What we improved in a real project using Factory
 
+Our system connects in few third part applications to execute some operations.
+
+To make the code clean and easy to maintain we decided to use Factory to create our objects wich connects in these applications.
+Each application is a sub-class for a ABC class where were created a shape to represent almost all methods for these applications. Something like that:
+
+```
+from abc import ABC
+
+
+class ThirdPartApplication(ABC):
+    def post(self):
+        ...
+
+    def get(self):
+        ...
+
+    def put(self):
+        ...
+
+    def delete(self):
+        ...
+
+```
+
+Or you can create the abstract class with a raise error:
+
+```
+class ThirdPartApplication(ABC):
+    def post(self):
+        raise NotImplementedError("This method was not implemented")
+
+```
+
+
+Each class application was created like that:
+
+```
+class ApplicationA(ThirdPartApplication):
+    def post(self):
+        execute_post()
+
+    def get(self):
+        execute_get()
+
+    def put(self):
+        execute_put()
+
+    def delete(self):
+        execute_get()
+
+```
+
+And so we create our class to handle create the object
+
+```
+class Applications(Enum):
+    ApplicationA: auto(),
+    ApplicationB: auto()
+
+
+class ThirdPartFactory:
+    def get_object(sefl, id_application: Applications):
+        list_applications: {
+            Applications.ApplicationA: ApplicationA,
+            Applications.ApplicationB: ApplicationB,
+        }
+        return list_applications.get(id_application)
+
+```
+
+Where you need to call your factory, do this.
+```
+factory = ThirdPartFactory()
+app_class = factory.get_object(Applications.ApplicationA)
+response = app_class.get()
+
+```
 
 ### Source
 
